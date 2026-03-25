@@ -21,10 +21,10 @@ def ip_datacentre(ip_address: str, datacentre_list):
 
 def extract_ip_from_hostname(hostname: str):
     hostname = hostname.replace("ec2-", "") #removing "ec2" from AWS EC2 hostnames because it comes right before an IP address and can make the regex think it's an IP starting with "2." and dropping the last octet
-    ip_dots = re.findall(r'[0-9]+(?:\.[0-9]+){3}',hostname)[0]
+    ip_dots = re.findall(r'[0-9]+(?:\.[0-9]+){3}',hostname)[0] #regex to find IP addresses in normal format in hostnames
     if ip_dots and is_valid_ip(ip_dots):
         return ip_dots
-    ip_dashes = re.findall(r'[0-9]+(?:-[0-9]+){3}', hostname)[0]
+    ip_dashes = re.findall(r'[0-9]+(?:-[0-9]+){3}', hostname)[0] #regex to find IP addresses with dashes instead of dots, as AWS likes to do in their hostnames
     ip_dashes = ip_dashes.replace('-', '.')
     if ip_dashes and is_valid_ip(ip_dashes):
         return ip_dashes
