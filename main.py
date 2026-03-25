@@ -43,6 +43,17 @@ def is_valid_ip(ip_address: str):
     except ValueError:
         return False
 
+'''
+def is_port_number(port_number: str):
+    try:
+        number = int(port_number)
+    except ValueError:
+        return False
+    if number < 0 or number > 65535:
+        return False
+    return True
+''' #Not currently used but may be useful in future
+
 def ip_to_hostname(ip_address: str):
     hostname = socket.gethostbyaddr(ip_address)[0]
     return hostname
