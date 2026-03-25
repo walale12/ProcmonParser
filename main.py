@@ -3,6 +3,7 @@ import re
 import ipaddress as ip
 import os
 import socket
+from tqdm import tqdm
 from urllib.request import urlretrieve
 
 def get_file_name():
@@ -75,11 +76,8 @@ def hostname_to_ip(hostname: str):
 def path_parse():
     dc_masks_vendors = []
     found_ips = []
-    found_dc_ips = []
-    found_dc_vendors = []
-    found_dc_hostnames = []
-    found_residential_ips = []
-    found_residential_hostnames = []
+    found_dc_ips_vendors_hostnames = []
+    found_residential_ips_hostnames = []
     system_hostname = socket.gethostname()
     logfile = pd.read_csv('LogFileCB.csv')
     datacentres = pd.read_csv('datacentres.csv')
@@ -90,12 +88,34 @@ def path_parse():
         dc_masks_vendors.append([mask, ''])
     for i, vendor in enumerate(vendors):
         dc_masks_vendors[i][1] = vendor
-    for path in paths:
+    for path in tqdm(paths, unit='rows'):
         path = path.split(' -> ')
         for element in path:
             if system_hostname in element or 'view-localhost' in element: #sanitising path values that we know won't contain IPs or useful hostnames
                 path.remove(element)
         path = path[0]
+        path = path.split(':') #separating hostnames/IP addresses from port numbers and protocols
+        if is_hostname(path[0]):
+            current_hostname = path[0]
+            current_ip = hostname_to_ip(current_hostname)
+        else:
+            if is_valid_ip(path[0]):
+                current_ip = path[0]
+                current_hostname = ip_to_hostname(current_ip)
+            else:
+                current_ip = None
+                current_hostname = None
+        if current_ip and current_ip not in found_ips:
+            found_ips.append(current_ip)
+            vendor = ip_datacentre(current_ip, dc_masks_vendors)
+            if vendor:
+                found_dc_ips_vendors_hostnames.append([current_ip, vendor, current_hostname])
+            else:
+                found_residential_ips_hostnames.append([current_ip, 'NOT DATACENTRE', current_hostname])
+    residential_ip_dataframe = pd.DataFrame(found_residential_ips_hostnames, columns=['IP Address', 'Datacentre Vendor', 'Hostname'])
+    datacentre_ip_dataframe = pd.DataFrame(found_dc_ips_vendors_hostnames, columns=['IP Address', 'Datacentre Vendor', 'Hostname'])
+    ip_dataframe = pd.concat([residential_ip_dataframe, datacentre_ip_dataframe])
+    print(ip_dataframe)
 
 
 if __name__ == '__main__':
