@@ -29,6 +29,12 @@ def extract_ip_from_hostname(hostname: str):
         return ip_dashes
     return None
 
+def is_hostname(path: str):
+    if re.search('[a-zA-Z]', path):
+        return True
+    else:
+        return False
+
 def is_valid_ip(ip_address: str):
     try:
         ip.ip_address(ip_address)
