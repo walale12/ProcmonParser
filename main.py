@@ -12,12 +12,12 @@ def ip_to_binary(ip_address: str):
         binary_ip += bin(int(octet))[2:]
     return binary_ip
 
-def ip_in_subnet(ip_address: str, subnet: str):
-    if ip.ip_address(ip_address) in ip.network(subnet):
-        return True
-    else:
-        return False
-'''
+def ip_datacentre(ip_address: str, datacentre_list):
+    for i in range(len(datacentre_list)):
+        if ip.ip_address(ip_address) in ip.ip_network(datacentre_list[i][0]):
+            return datacentre_list[i][1]
+    return None
+
 def extract_ip_from_hostname(hostname: str):
     hostname = hostname.replace("ec2-", "") #removing "ec2" from AWS EC2 hostnames because it comes right before an IP address and can make the regex think it's an IP starting with "2." and dropping the last octet
     ip_dots = re.findall(r'[0-9]+(?:\.[0-9]+){3}',hostname)[0]
