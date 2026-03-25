@@ -96,8 +96,10 @@ def path_parse():
 
 
 if __name__ == '__main__':
-    directory = os.getenv("USERPROFILE") + "\\Downloads\\SysInternalsSuite\\"
+    directory = os.getenv("USERPROFILE") + "\\Downloads\\SysInternalsSuite\\" #set this to the path of the directory containing the log file you'd like to analyse
     os.chdir(directory)
     os.remove('datacentres.csv')
     urlretrieve('https://raw.githubusercontent.com/jhassine/server-ip-addresses/refs/heads/master/data/datacenters.csv', 'datacentres.csv')
+    print('Please enter the name of the data file you would like to parse:')
+    data_file_name = get_file_name()
     path_parse()
