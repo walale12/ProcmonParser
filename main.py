@@ -15,8 +15,9 @@ def get_file_name():
     return filename
 
 def ip_datacentre(ip_address: str, datacentre_list):
+    ip_address = ip.ip_address(ip_address)
     for i in range(len(datacentre_list)):
-        if ip.ip_address(ip_address) in ip.ip_network(datacentre_list[i][0]):
+        if ip_address in datacentre_list[i][0]:
             return datacentre_list[i][1]
     return None
 
@@ -85,7 +86,7 @@ def path_parse():
     masks = datacentres.cidr
     vendors = datacentres.vendor
     for mask in masks:
-        dc_masks_vendors.append([mask, ''])
+        dc_masks_vendors.append([ip.ip_network(mask), ''])
     for i, vendor in enumerate(vendors):
         dc_masks_vendors[i][1] = vendor
     for path in tqdm(paths, unit='rows'):
