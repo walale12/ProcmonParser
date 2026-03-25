@@ -55,8 +55,11 @@ def is_port_number(port_number: str):
 ''' #Not currently used but may be useful in future
 
 def ip_to_hostname(ip_address: str):
-    hostname = socket.gethostbyaddr(ip_address)[0]
-    return hostname
+    try:
+        hostname = socket.gethostbyaddr(ip_address)[0]
+        return hostname
+    except socket.herror:
+        return None
 
 def hostname_to_ip(hostname: str):
     try:
