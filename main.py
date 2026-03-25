@@ -4,13 +4,14 @@ import ipaddress as ip
 import os
 import socket
 from urllib.request import urlretrieve
-'''
-def ip_to_binary(ip_address: str):
-    ip_split = ip_address.split('.')
-    binary_ip = ''
-    for octet in ip_split:
-        binary_ip += bin(int(octet))[2:]
-    return binary_ip
+
+def get_file_name():
+    current_directory = os.getcwd()
+    filename = input()
+    if filename not in os.listdir(current_directory):
+        print('This file does not exist, please enter the name of a valid file in ' + current_directory + '/ which you would like to parse')
+        filename = get_file_name()
+    return filename
 
 def ip_datacentre(ip_address: str, datacentre_list):
     for i in range(len(datacentre_list)):
