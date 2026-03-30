@@ -88,14 +88,6 @@ def asn_lookup(asn):
         return vendor['Vendor'].values[0]
     return None
 
-def get_file_name():
-    current_directory = os.getcwd()
-    filename = input()
-    if filename not in os.listdir(current_directory):
-        print('This file does not exist, please enter the name of a valid file in ' + current_directory + '/ which you would like to parse')
-        filename = get_file_name()
-    return filename
-
 def ip_datacentre(ip_address, datacentre_ranges):
     ip_address = ip.ip_address(ip_address)
     ip_address = int(ip_address)
@@ -137,34 +129,7 @@ def is_valid_ip(ip_address: str):
     except ValueError:
         return False
 
-'''
-def is_port_number(port_number: str):
-    try:
-        number = int(port_number)
-    except ValueError:
-        return False
-    if number < 0 or number > 65535:
-        return False
-    return True
-''' #Not currently used but may be useful in future
 
-def ip_to_hostname(ip_address: str):
-    try:
-        hostname = socket.gethostbyaddr(ip_address)[0]
-        return hostname
-    except socket.herror:
-        return None
-
-def hostname_to_ip(hostname: str):
-    try:
-        ip_address: str = socket.gethostbyname(hostname)
-        return ip_address
-    except socket.gaierror:
-        ip_address = extract_ip_from_hostname(hostname)
-        if ip_address:
-            return ip_address
-        else:
-            return None
 
 def path_parse(args):
     found_ips = []
