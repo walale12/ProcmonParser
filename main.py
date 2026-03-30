@@ -178,4 +178,7 @@ if __name__ == '__main__':
     if not os.path.isfile(args.file):
         print('Error: File does not exist')
         sys.exit(1)
+    if not args.file.endswith('.csv'):
+        print('Error: File is not a CSV')
+        sys.exit(1)
     path_parse(args)
