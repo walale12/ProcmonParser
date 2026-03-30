@@ -8,7 +8,7 @@ The Procmon IP Address Parser is a tool to parse IP addresses from .csv files cr
 - Tqdm
 - pyasn  
 
-In addition, with pyasn, you will need to download the IPASN data files for ASN lookups to work. Please follow the ipasn instructions [here](https://pypi.org/project/pyasn/), and save the file as "ipasn_db" in your Python working directory.
+In addition, with pyasn, you will need to download the IPASN data files for ASN lookups to work. Please follow the ipasn instructions [here](https://pypi.org/project/pyasn/#description:~:text=23969%20%2E%2E%2E-,IPASN,longer), and save the file as "ipasn_db" in your Python working directory.
 
 ## Usage
 To run the parser, invoke it from the command line as follows:
