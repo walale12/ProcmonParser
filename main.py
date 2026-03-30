@@ -2,8 +2,16 @@ import pandas as pd
 import re
 import ipaddress as ip
 import os
+import sys
 import socket
 from tqdm import tqdm
+import argparse as arg
+
+def parse_args():
+    parser = arg.ArgumentParser()
+    parser.add_argument('file', help='Path to the log file')
+    parser.add_argument("-dc", "--check-datacentre", help="Automatically check IP addresses to see if they are in ranges used by datacentres", action="store_true")
+    return parser.parse_args()
 
 def process_dc_list():
     print("Downloading list of datacentre IP ranges...")
@@ -83,14 +91,19 @@ def hostname_to_ip(hostname: str):
         else:
             return None
 
-def path_parse():
-    dc_masks_vendors = []
+def path_parse(datacentres, args):
     found_ips = []
     found_dc_ips_vendors_hostnames = []
     found_residential_ips_hostnames = []
     system_hostname = socket.gethostname()
-    logfile = pd.read_csv('LogFileCB.csv')
-    datacentres = pd.read_csv('datacentres.csv')
+    try:
+        logfile = pd.read_csv(args.file)
+    except pd.errors.EmptyDataError:
+        print('Error: File is empty')
+        sys.exit(1)
+    except pd.errors.ParserError:
+        print('Error: File is not a valid CSV')
+        sys.exit(1)
     paths = logfile.Path
     masks = datacentres.cidr
     vendors = datacentres.vendor
@@ -129,13 +142,8 @@ def path_parse():
 
 
 if __name__ == '__main__':
-    directory = os.getenv("USERPROFILE") + "\\Downloads\\SysInternalsSuite\\" #set this to the path of the directory containing the log file you'd like to analyse
-    os.chdir(directory)
-    try:
-        os.remove('datacentres.csv')
-    except OSError:
-        pass
-    urlretrieve('https://raw.githubusercontent.com/jhassine/server-ip-addresses/refs/heads/master/data/datacenters.csv', 'datacentres.csv')
-    print('Please enter the name of the data file you would like to parse:')
-    data_file_name = get_file_name()
-    path_parse()
+    args = parse_args()
+    if not os.path.isfile(args.file):
+        print('Error: File does not exist')
+        sys.exit(1)
+    path_parse(args)
