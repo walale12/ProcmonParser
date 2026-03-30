@@ -4,7 +4,16 @@ import ipaddress as ip
 import os
 import socket
 from tqdm import tqdm
-from urllib.request import urlretrieve
+
+def process_dc_list():
+    print("Downloading list of datacentre IP ranges...")
+    datacentre_ranges = pd.read_csv('https://raw.githubusercontent.com/jhassine/server-ip-addresses/refs/heads/master/data/datacenters.csv')
+    print("Processing...")
+    datacentre_ranges['hostmin'] = datacentre_ranges['hostmin'].apply(lambda x: int(ip.ip_address(x)), strict=False)
+    datacentre_ranges['hostmax'] = datacentre_ranges['hostmax'].apply(lambda x: int(ip.ip_address(x)), strict=False)
+    datacentre_ranges.sort_values(by=['hostmin'], inplace=True)
+    print("Processing complete.")
+    return datacentre_ranges
 
 def get_file_name():
     current_directory = os.getcwd()
