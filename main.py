@@ -80,6 +80,10 @@ def check_asn(ip_address_frame):
             asn_residential_ips = pd.concat([asn_residential_ips, new_residential_row])
     return [asn_datacentre_ips, asn_residential_ips]
 
+def is_reserved(ip_address):
+    if ip_address.is_private or ip_address.is_loopback or ip_address.is_multicast or ip_address.is_link_local or ip_address.is_reserved or ip_address.is_documentation or ip_address.is_unspecified:
+        return True
+    return False
 
 def asn_lookup(asn):
     df = pd.read_csv('known_asns.csv')
@@ -159,7 +163,7 @@ def path_parse(args):
                 current_ip = path[0]
             else:
                 current_ip = None
-        if current_ip and current_ip not in found_ips:
+        if current_ip and current_ip not in found_ips and not is_reserved(current_ip):
             found_ips.append(current_ip)
     if args.check_datacentre:
         separated_ips = datacentre_check(found_ips)
@@ -178,7 +182,7 @@ if __name__ == '__main__':
     if not os.path.isfile(args.file):
         print('Error: File does not exist')
         sys.exit(1)
-    if not args.file.endswith('.csv'):
+    if not args.file.lower().endswith('.csv'):
         print('Error: File is not a CSV')
         sys.exit(1)
     path_parse(args)
