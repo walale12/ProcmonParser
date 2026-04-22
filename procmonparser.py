@@ -40,7 +40,7 @@ def path_parse(args):
                 current_ip = path[0]
             else:
                 current_ip = None
-        if current_ip and current_ip not in found_ips and not shared.is_reserved(current_ip):
+        if current_ip and current_ip not in found_ips and not shared.is_reserved(current_ip) and not shared.is_my_ip(current_ip):
             found_ips.append(current_ip)
     if args.check_datacentre:
         separated_ips = shared.datacentre_check(found_ips)

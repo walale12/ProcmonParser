@@ -4,6 +4,7 @@ import re
 import pyasn
 from tqdm import tqdm
 import bisect
+from requests import get
 
 def process_dc_list():
     print("Downloading lists of datacentre IP ranges...")
@@ -122,3 +123,8 @@ def is_valid_ip(ip_address: str):
         return True
     except ValueError:
         return False
+
+def is_my_ip(ip_address):
+    ip_address = ip.ip_address(ip_address)
+    my_ip = ip.ip_address(get('https://api.ipify.org').content.decode('utf-8'))
+    return ip_address == my_ip
